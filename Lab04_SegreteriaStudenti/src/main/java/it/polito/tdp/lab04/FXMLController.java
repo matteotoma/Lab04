@@ -2,6 +2,7 @@ package it.polito.tdp.lab04;
 
 import java.net.URL;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -9,8 +10,6 @@ import java.util.ResourceBundle;
 import it.polito.tdp.lab04.model.Corso;
 import it.polito.tdp.lab04.model.Model;
 import it.polito.tdp.lab04.model.Studente;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -21,9 +20,9 @@ import javafx.scene.control.TextField;
 public class FXMLController {
 	
 	private Model model;
-	private ObservableList<String> list = FXCollections.observableArrayList("Gestione dell'innovazione e sviluppo prodotto", "Gestione dell'innovazione e sviluppo prodotto ICT", "Ingegneria della qualità", "Strategia, tecnologia e marketing", "Economia e finanza d'impresa", "Analisi e gestione dei sistemi produttivi", "Analisi finanziaria e creditizia per l'impresa", "Diritto commerciale", "Economia dei sistemi industriali", "Sistemi informativi aziendali", "Analisi dei sistemi economici", "Economia aziendale", "Economia aziendale", "Gestione dei progetti", "");
-
-    @FXML
+    private List<String> list;
+    
+	@FXML
     private ResourceBundle resources;
 
     @FXML
@@ -67,7 +66,7 @@ public class FXMLController {
 			m = Integer.parseInt(matricola);
 		}
 		catch(Exception e) {
-			throw new RuntimeException("Formato matricola errato" + e);
+			txtRisultato.appendText("Formato matricola errato" + e);
 		}
 		List<Corso> corsi = new ArrayList<>();
 		corsi.addAll(model.getCorsiByStudente(matricola));
@@ -82,7 +81,7 @@ public class FXMLController {
     @FXML
     void doCercaIscrittiCorso(ActionEvent event) {
     	String nomeCorso = chcBox.getValue();
-    	if(nomeCorso.equals("") || nomeCorso.equals("Corsi"))
+    	if(nomeCorso.equals(""))
     		txtRisultato.appendText("Devi selezionare un corso\n");
     	else {
     		List<Studente> studenti = new ArrayList<>();
@@ -104,7 +103,7 @@ public class FXMLController {
 			m = Integer.parseInt(matricola);
 		}
 		catch(Exception e) {
-			throw new RuntimeException("Formato matricola errato" + e);
+			txtRisultato.appendText("Formato matricola errato" + e);
 		}
     	Studente s = model.getStudenteByMatricola(txtMatricola.getText());
     	if(s!=null) {
@@ -142,6 +141,12 @@ public class FXMLController {
     	txtNome.clear();
     	txtCognome.clear();
     }
+    
+    private void setList() {
+    	list = model.getNomeCorsi();
+    	list.add("");
+    	chcBox.getItems().addAll(list);
+    }
 
     @FXML
     void initialize() {
@@ -156,13 +161,11 @@ public class FXMLController {
         assert txtRisultato != null : "fx:id=\"txtRisultato\" was not injected: check your FXML file 'Scene.fxml'.";
         assert btnReset != null : "fx:id=\"btnReset\" was not injected: check your FXML file 'Scene.fxml'.";
         
-        chcBox.setItems(list);
-        chcBox.setValue("");
-
     }
     
     public void setModel(Model m) {
     	this.model = m;
+    	this.setList();
     }
     
 }
